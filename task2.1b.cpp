@@ -66,12 +66,13 @@ int main()
     float inputBuffer[BUFFER_SIZE];
     float outputBuffer[BUFFER_SIZE];
     std::cout << "Starting audio stream. Press Ctrl+C to stop." << std::endl;
+    
     while(true)
     {
         err = Pa_ReadStream(stream, inputBuffer, BUFFER_SIZE);
         checkErr(err);
 
-        smbPitchShift(0.5, BUFFER_SIZE, 1024, 4, SAMPLING_FREQ, inputBuffer, outputBuffer);
+        smbPitchShift(2.0f, BUFFER_SIZE, 1024, 4, SAMPLING_FREQ, inputBuffer, outputBuffer);
 
         err = Pa_WriteStream(stream, outputBuffer, BUFFER_SIZE);
         checkErr(err);
