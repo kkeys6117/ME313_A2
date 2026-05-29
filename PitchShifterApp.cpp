@@ -94,8 +94,13 @@ private:
                     break;
                 case 'u':
                     if (!isPassthrough) {
-                        pitchShiftFactor.store(pitchShiftFactor.load() + 0.5f);
-                        std::cout << "[Pitch] Factor increased to: " << pitchShiftFactor.load() << "\n";
+                        float current = pitchShiftFactor.load();
+                        if (current < 2.0f) {
+                            pitchShiftFactor.store(current + 0.5f);
+                            std::cout << "[Pitch] Factor increased to: " << pitchShiftFactor.load() << "\n";
+                        } else {
+                            std::cout << "[Pitch] Factor increased is at max (2.0)"  << "\n";
+                        }
                     }
                     break;
                 case 'd':
