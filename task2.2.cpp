@@ -9,7 +9,7 @@
 using namespace std;
 
 const int SAMPLING_FREQ = 44100;
-const int BUFFER_SIZE = 512;
+const int BUFFER_SIZE = 1024;
 const int INPUT_CHANNEL_NO = 1;
 const int OUTPUT_CHANNEL_NO = 1;
 const PaSampleFormat SAMPLE_FORMAT = paFloat32;

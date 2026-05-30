@@ -18,7 +18,7 @@
         delete[] outputBufferB;
     }
 
-    void checkErr(PaError err) {
+    void PitchShifterApp::checkErr(PaError err) {
         if (err != paNoError) {
             std::cerr << "PortAudio error: " << Pa_GetErrorText(err) << std::endl;
             exit(EXIT_FAILURE);

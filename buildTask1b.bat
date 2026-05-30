@@ -2,12 +2,12 @@
 echo Compiling Pitch Shifter Project...
 
 :: Run the g++ command
-g++ -O3 -std=c++17 task2.3.cpp PitchShifterApp.cpp smbPitchShift.cpp -Wno-stringop-overflow -lportaudio -o pitch_shifter.exe
+g++ -o task1b.exe task2.1b.cpp smbPitchShift.cpp -lportaudio
 :: Check if it built successfully
 if %errorlevel% equ 0 (
     echo.
     echo ====================================
-    echo Build Successful! Run pitch_shifter.exe
+    echo Build Successful! Run task1b.exe
     echo ====================================
 ) else (
     echo.
