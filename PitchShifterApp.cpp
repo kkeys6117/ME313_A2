@@ -1,33 +1,22 @@
-#include <iostream>
-#include <thread>
-#include <chrono>
-#include <atomic>
-#include <algorithm> // For std::copy
-#include "portaudio.h"
-#include "smbPitchShift.cpp"
+#include "PitchShifterApp.hpp"
 
-class PitchShifterApp {
-private:
-    const int SAMPLING_FREQ = 44100;
-    const int BUFFER_SIZE = 1024;
-    const int INPUT_CHANNEL_NO = 1;
-    const int OUTPUT_CHANNEL_NO = 1;
-    const PaSampleFormat SAMPLE_FORMAT = paFloat32;
+    PitchShifterApp::PitchShifterApp() {
+        inputBufferA = new float[BUFFER_SIZE]();
+        inputBufferB = new float[BUFFER_SIZE]();
+        outputBufferA = new float[BUFFER_SIZE]();
+        outputBufferB = new float[BUFFER_SIZE]();
 
-    float* inputBufferA;
-    float* inputBufferB;
-    float* outputBufferA;
-    float* outputBufferB;
+        checkErr(Pa_Initialize());
+        checkErr(Pa_OpenDefaultStream(&stream, INPUT_CHANNEL_NO, OUTPUT_CHANNEL_NO, SAMPLE_FORMAT, SAMPLING_FREQ, BUFFER_SIZE, nullptr, nullptr));
+    }
 
-    std::atomic<bool> isBufferAReadyForProcessing{false};
-    std::atomic<bool> isBufferBReadyForProcessing{false};
-    std::atomic<bool> isRunning{false};
-    std::atomic<bool> isPassthrough{false};
-    std::atomic<float> pitchShiftFactor{1.0f};
-
-    std::thread processingThread;
-    std::thread keyboardThread;
-    PaStream* stream = nullptr;
+    PitchShifterApp::~PitchShifterApp() {
+        // Clean up heap arrays safely
+        delete[] inputBufferA;
+        delete[] inputBufferB;
+        delete[] outputBufferA;
+        delete[] outputBufferB;
+    }
 
     void checkErr(PaError err) {
         if (err != paNoError) {
@@ -37,7 +26,7 @@ private:
     }
 
     // 1. Worker Thread: Processes Audio Data
-    void processingWorker() {
+    void PitchShifterApp::processingWorker() {
         while (isRunning) {
             if (isBufferAReadyForProcessing) {
                 if (isPassthrough) {
@@ -62,7 +51,7 @@ private:
     }
 
     // 2. Worker Thread: Captures User Commands
-    void keyboardWorker() {
+    void PitchShifterApp::keyboardWorker() {
         char input;
         std::cout << "\n=== Interactive Pitch Shifter Controls ===\n"
                   << "[s] Start Pitch Shifter\n"
@@ -118,26 +107,7 @@ private:
         }
     }
 
-public:
-    PitchShifterApp() {
-        inputBufferA = new float[BUFFER_SIZE]();
-        inputBufferB = new float[BUFFER_SIZE]();
-        outputBufferA = new float[BUFFER_SIZE]();
-        outputBufferB = new float[BUFFER_SIZE]();
-
-        checkErr(Pa_Initialize());
-        checkErr(Pa_OpenDefaultStream(&stream, INPUT_CHANNEL_NO, OUTPUT_CHANNEL_NO, SAMPLE_FORMAT, SAMPLING_FREQ, BUFFER_SIZE, nullptr, nullptr));
-    }
-
-    ~PitchShifterApp() {
-        // Clean up heap arrays safely
-        delete[] inputBufferA;
-        delete[] inputBufferB;
-        delete[] outputBufferA;
-        delete[] outputBufferB;
-    }
-
-    void start() {
+    void PitchShifterApp::start() {
         checkErr(Pa_StartStream(stream));
         isRunning = true;
 
@@ -149,7 +119,7 @@ public:
         runAudioLoop();
     }
 
-    void runAudioLoop() {
+    void PitchShifterApp::runAudioLoop() {
         bool useBufferA = true;
 
         // Main execution thread stays entirely here processing stream sequences
@@ -168,7 +138,7 @@ public:
     }
 
     // This method is called from MAIN thread ONLY after runAudioLoop completes
-    void stop() {
+    void PitchShifterApp::stop() {
         std::cout << "Cleaning up background worker threads...\n";
 
         if (processingThread.joinable()) {
@@ -187,4 +157,4 @@ public:
         Pa_Terminate();
         std::cout << "Engine cleanly terminated with zero active threads.\n";
     }
-};
+    

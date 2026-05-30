@@ -4,7 +4,7 @@
 #include <atomic>
 #include <mutex>
 #include "portaudio.h"
-#include "smbPitchShift.cpp"
+#include "smbPitchShift.hpp"
 
 using namespace std;
 

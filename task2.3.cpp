@@ -1,4 +1,4 @@
-#include "PitchShifterApp.cpp"
+#include "PitchShifterApp.hpp"
 
 void printDeviceInfo(const PaDeviceInfo *deviceInfo, const char *deviceType)
 {

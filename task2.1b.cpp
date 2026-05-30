@@ -1,7 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include "portaudio.h"
-#include "smbPitchShift.cpp"
+#include "smbPitchShift.hpp"
 
 // --- 1. PitchShifter Class ---
 class PitchShifter {
