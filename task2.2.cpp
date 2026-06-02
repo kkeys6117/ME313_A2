@@ -135,5 +135,8 @@ int main() {
     isRunning = false;
     if (processingThread.joinable()) processingThread.join();
     // ... PortAudio Close & Terminate ...
+    Pa_StopStream(stream);
+    Pa_CloseStream(stream);
+    Pa_Terminate();
     return 0;
 }
